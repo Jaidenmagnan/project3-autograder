@@ -159,7 +159,7 @@ def main():
 
             grades[name] = round((float(score) / 12.0)*100, 2) # a perfect score is a 108
         else:
-            grades[name] = "-1"
+            grades[name] = -1
 
                 
 
@@ -177,6 +177,7 @@ def main():
 
         # Write the data
         for name in sorted(names):
+            grades[name] = min(grades[name], 105)
             if(grades[name] == 0):
                 grades[name] = -1
                 compiled[name] = False
