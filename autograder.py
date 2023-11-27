@@ -4,7 +4,31 @@ import subprocess
 from PIL import Image
 import glob
 import csv
+import shutil
 
+
+def check_and_flatten_directory(directory: str):
+    for root, dirs, files in os.walk(directory):
+        for dir in dirs:
+            sub_dir = os.path.join(root, dir)
+            if sub_dir != directory and dir.lower() not in ["src", "output", "input", "examples"]:
+                for item in os.listdir(sub_dir):
+                    item_path = os.path.join(sub_dir, item)
+                    target_path = os.path.join(directory, item)
+                    if os.path.exists(target_path):
+                        # Handle the naming conflict here, e.g., rename the moving item
+                        target_path = resolve_conflict(target_path)
+                    shutil.move(item_path, target_path)
+                os.rmdir(sub_dir)
+
+def resolve_conflict(path):
+    base, extension = os.path.splitext(path)
+    counter = 1
+    new_path = f"{base}_{counter}{extension}"
+    while os.path.exists(new_path):
+        counter += 1
+        new_path = f"{base}_{counter}{extension}"
+    return new_path
 
 def unzip_all(directory: str, names: list, late: dict):
     # Iterate through all the files in the specified directory
@@ -30,6 +54,8 @@ def unzip_all(directory: str, names: list, late: dict):
                 # Extract all the contents into the directory
                 names.append(student_name)
                 zip_ref.extractall(target_path)
+                check_and_flatten_directory(target_path)
+
 
 def compile_c_code(directory: str ) -> bool:
     # Run the command
