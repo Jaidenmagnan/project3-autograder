@@ -165,7 +165,7 @@ def main():
 
             
 
-    subprocess.run(["rm", "-r", "extracted_submissions"])
+    #subprocess.run(["rm", "-r", "extracted_submissions"])
     
     # Open a file in write mode
     with open('output.csv', 'w', newline='') as csvfile:
