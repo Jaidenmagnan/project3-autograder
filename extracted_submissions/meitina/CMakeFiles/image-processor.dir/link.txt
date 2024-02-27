@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/image-processor.dir/src/Header.cpp.o CMakeFiles/image-processor.dir/src/image_processor.cpp.o CMakeFiles/image-processor.dir/src/ImageData.cpp.o -o image-processor 

@@ -77,6 +77,7 @@ def compile_c_code(directory: str ) -> bool:
                 subprocess.run(["cp", "-r", "../../template_files/input", "."])
                 subprocess.run(["cp", "-r", "../../template_files/output", "."])
                 subprocess.run(["cp", "-r", "../../template_files/examples", "."])
+
                 result_run= subprocess.run(["./image-processor"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 result_run= subprocess.run(["rm", "image-processor"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 os.chdir("../..")
@@ -88,9 +89,10 @@ def compile_c_code(directory: str ) -> bool:
     return result_cmake.returncode == 0 and found and ran_correctly
 
 
-def check_rust_code(directory: str) -> bool:
+def check_rust_code(directory: str, in_rust: list, name: str) -> bool:
     for root, dirs, files in os.walk(directory):
         if("Cargo.toml" in files):
+            in_rust[name] = True
             os.chdir(directory)
             copy_run = subprocess.run(["cp", "-r", "../../template_files/input", "."])
             copy_run = subprocess.run(["cp", "-r", "../../template_files/output", "."])
@@ -132,10 +134,12 @@ def main():
     compiled = {}
     correct = {}
     grades = {}
+    in_rust = {}
 
     for name in names:
         compiled[name] = compile_c_code(f"extracted_submissions/{name}")
-        compiled[name] = compiled[name] or check_rust_code(f"extracted_submissions/{name}")
+        compiled[name] = compiled[name] or check_rust_code(f"extracted_submissions/{name}", in_rust, name)
+
         correct[name] = 0
         grades[name] = 0
 
@@ -173,15 +177,17 @@ def main():
         writer = csv.writer(csvfile)
 
         # Write the header
-        writer.writerow(['name', 'score', 'compiled', 'images-correct', 'late'])
+        writer.writerow(['name', 'score', 'compiled', 'images-correct', 'late', 'in-rust'])
 
         # Write the data
         for name in sorted(names):
             grades[name] = min(grades[name], 105)
-            if(grades[name] == 0):
+            if(grades[name] == 0 ):
                 grades[name] = -1
                 compiled[name] = False
-            writer.writerow([name, grades[name], compiled[name], correct[name], late[name]])
+            if in_rust.get(name) == None:
+                in_rust[name] = False
+            writer.writerow([name, grades[name], compiled[name], correct[name], late[name], in_rust[name]])
 
 
 

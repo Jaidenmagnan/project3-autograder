@@ -1,3 +1,0 @@
-/home/jmoney/project3-autograder/extracted_submissions/meitina/CMakeFiles/image-processor.dir
-/home/jmoney/project3-autograder/extracted_submissions/meitina/CMakeFiles/edit_cache.dir
-/home/jmoney/project3-autograder/extracted_submissions/meitina/CMakeFiles/rebuild_cache.dir
